@@ -31,9 +31,9 @@ const removeActiveClass=()=>{
  };
 
  //create load Videos
- const loadVideos = () => {
+ const loadVideos = (searchText = "" ) => {  //function jokhn call korbe tokhn jodi parameter na dewa thake tahole eibhabe "" default value set kora jay
     //fetch the data
-    fetch("https://openapi.programming-hero.com/api/phero-tube/videos")
+    fetch(`https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`)
     .then ((res)=> res.json())
     .then((data) => displayVideos(data.videos))  //sudhu catagories lagbe tai
     .catch((error) => console.log(error));
@@ -79,7 +79,7 @@ const displayDetails = (video) =>
 
   //way-2
   document.getElementById("customModal").showModal();
-}
+};
 
 
 //create Display categories
@@ -174,6 +174,11 @@ const displayVideos = (videos) => {
 
     });
 };
+
+// search er jonno
+document.getElementById("searchInput").addEventListener("keyup",(e)=>{
+    loadVideos(e.target.value);
+})
 
 loadCategories();
 loadVideos();
