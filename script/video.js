@@ -34,7 +34,10 @@ function getTime(time)
 //create Display videos
 const displayVideos = (videos) => {
     const videoContainer = document.getElementById("videos");  //button er id ta ke call korsi
+    // button e click korle container e ja ache aage clear kora lagbe tar jonno
+    videoContainer.innerHTML= "";
 
+    
     videos.forEach((video) => {  //prottek item show er jnno loop
         console.log(video);
 
@@ -75,6 +78,14 @@ const displayVideos = (videos) => {
     });
 };
 
+const loadCategoriesVideos = (id) =>
+    {
+        fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+        .then ((res)=> res.json())
+        .then((data) => displayVideos(data.category))  //sudhu catagories lagbe tai
+        .catch((error) => console.log(error));
+    };
+
 //create Display categories
 const displayCategories = (categories) => {
     const categoryContainer = document.getElementById("categories");  //button er id ta ke call korsi
@@ -93,7 +104,7 @@ const displayCategories = (categories) => {
 
     const buttonContainer = document.createElement("div");
     buttonContainer.innerHTML=
-    `<button class="btn">
+    `<button onclick="loadCategoriesVideos(${item.category_id})" class="btn">
     ${item.category}
     </button>
     `;
