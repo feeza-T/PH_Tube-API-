@@ -12,6 +12,15 @@ function getTime(time)
 
 }
 
+const removeActiveClass=()=>{
+    const buttons = document.getElementsByClassName("category-btn");
+    console.log(buttons);
+    for(let btn of buttons)
+    {
+        btn.classList.remove("active");
+    }
+}
+
 //create load Categories
  const loadCategories = () => {
     //fetch the data
@@ -37,7 +46,23 @@ const displayVideos = (videos) => {
     // button e click korle container e ja ache aage clear kora lagbe tar jonno
     videoContainer.innerHTML= "";
 
-    
+    //videos na thakle eta show korbe
+    if(videos.length == 0)
+    {
+        videoContainer.classList.remove("grid");
+        videoContainer.innerHTML=
+        `
+        <div class="min-h-[300px] w-full flex flex-col gap-5 justify-center item-center>
+        <img src="Icon.png" />
+        <h2 class="text-center text-xl font-bold">No content here in th  is category.</h2>
+        </div>
+        `;
+        return ;
+    }
+    else{
+        videoContainer.classList.add("grid");
+    }
+
     videos.forEach((video) => {  //prottek item show er jnno loop
         console.log(video);
 
@@ -82,7 +107,15 @@ const loadCategoriesVideos = (id) =>
     {
         fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
         .then ((res)=> res.json())
-        .then((data) => displayVideos(data.category))  //sudhu catagories lagbe tai
+        .then((data) => {
+
+            //baki btn er color remove krte call
+            removeActiveClass();
+
+            const activeBtn = document.getElementById(`btn-${id}`);
+            activeBtn.classList.add("active");  //css add hosie
+            displayVideos(data.category);
+        })  //sudhu catagories lagbe tai
         .catch((error) => console.log(error));
     };
 
@@ -104,7 +137,8 @@ const displayCategories = (categories) => {
 
     const buttonContainer = document.createElement("div");
     buttonContainer.innerHTML=
-    `<button onclick="loadCategoriesVideos(${item.category_id})" class="btn">
+    `<button id="btn-${item.category_id}" class="btn category-btn"
+     onclick="loadCategoriesVideos(${item.category_id})" >
     ${item.category}
     </button>
     `;
