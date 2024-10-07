@@ -40,6 +40,76 @@ const removeActiveClass=()=>{
  };
 
 
+
+const loadCategoriesVideos = (id) =>
+    {
+        fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+        .then ((res)=> res.json())
+        .then((data) => {
+
+            //baki btn er color remove krte call
+            removeActiveClass();
+
+            const activeBtn = document.getElementById(`btn-${id}`);
+            activeBtn.classList.add("active");  //css add hosie
+            displayVideos(data.category);
+        })  //sudhu catagories lagbe tai
+        .catch((error) => console.log(error));
+    };
+
+//create load details (another way of fetching data)
+const loadDetails =async(videoID)=> {
+   const uri = `https://openapi.programming-hero.com/api/phero-tube/video/${videoID}`;
+   const res=await fetch(uri);
+   const data = await res.json();
+   displayDetails(data.video);
+
+};
+// detail display er jonno(Modal use kore)
+const displayDetails = (video) =>
+{
+  const detailContainer = document.getElementById('modal-content');
+
+  detailContainer.innerHTML=
+  `<img src=${video.thumbnail} />
+  <p>${video.description}</p>
+  `;
+//way-1
+    //document.getElementById("showModalData").click();
+
+  //way-2
+  document.getElementById("customModal").showModal();
+}
+
+
+//create Display categories
+const displayCategories = (categories) => {
+    const categoryContainer = document.getElementById("categories");  //button er id ta ke call korsi
+
+    categories.forEach((item) => {  //prottek item show er jnno loop
+        console.log(item);
+///////////////////////////////////////
+        // //create button
+        // const button = document.createElement('button');
+        // button.classList='btn';
+        // button.innerText=item.category ;
+
+        // //add button to category container
+        // categoryContainer.append(button);
+ //////////////////////////////////////////////
+
+    const buttonContainer = document.createElement("div");
+    buttonContainer.innerHTML=
+    `<button id="btn-${item.category_id}" class="btn category-btn"
+     onclick="loadCategoriesVideos(${item.category_id})" >
+    ${item.category}
+    </button>
+    `;
+
+    categoryContainer.append(buttonContainer);
+
+    });
+};
 //create Display videos
 const displayVideos = (videos) => {
     const videoContainer = document.getElementById("videos");  //button er id ta ke call korsi
@@ -94,6 +164,8 @@ const displayVideos = (videos) => {
           ${video.authors[0].verified == true ? '<img class="w-5" src=" https://img.icons8.com/?size=48&id=98A4yZTt9abw&format=png">' :""}
          
           </div>
+        
+          <p><button onclick="loadDetails('${video.video_id}')" class="btn btn-xm btn-error">Details</button></p>
          </div>
    </div>
        `;
@@ -102,52 +174,6 @@ const displayVideos = (videos) => {
 
     });
 };
-
-const loadCategoriesVideos = (id) =>
-    {
-        fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
-        .then ((res)=> res.json())
-        .then((data) => {
-
-            //baki btn er color remove krte call
-            removeActiveClass();
-
-            const activeBtn = document.getElementById(`btn-${id}`);
-            activeBtn.classList.add("active");  //css add hosie
-            displayVideos(data.category);
-        })  //sudhu catagories lagbe tai
-        .catch((error) => console.log(error));
-    };
-
-//create Display categories
-const displayCategories = (categories) => {
-    const categoryContainer = document.getElementById("categories");  //button er id ta ke call korsi
-
-    categories.forEach((item) => {  //prottek item show er jnno loop
-        console.log(item);
-///////////////////////////////////////
-        // //create button
-        // const button = document.createElement('button');
-        // button.classList='btn';
-        // button.innerText=item.category ;
-
-        // //add button to category container
-        // categoryContainer.append(button);
- //////////////////////////////////////////////
-
-    const buttonContainer = document.createElement("div");
-    buttonContainer.innerHTML=
-    `<button id="btn-${item.category_id}" class="btn category-btn"
-     onclick="loadCategoriesVideos(${item.category_id})" >
-    ${item.category}
-    </button>
-    `;
-
-    categoryContainer.append(buttonContainer);
-
-    });
-};
-
 
 loadCategories();
 loadVideos();
